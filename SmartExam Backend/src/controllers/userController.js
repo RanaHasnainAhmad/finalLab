@@ -178,6 +178,26 @@ const refreshAccessToken = asyncDbHandler(async (req, res) => {
          throw new apiErrors(401, "Invalid refresh token");
      }
 });
+
+const getThemePreference = async (req, res) => {
+  try {
+    const userId = req.user._id; // Assuming you attach user info in verifyJWT middleware
+    const user = await User.findById(userId).select('theme');
+
+    if (!user) return res.status(404).json({ message: 'User not found' });
+
+    res.json({ theme: user.theme || 'light' });
+  } catch (error) {
+    console.error('Error in getThemePreference:', error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
+const updateThemePreference = async (req, res) => {
+  const { theme } = req.body;
+  await User.findByIdAndUpdate(req.user.id, { themePreference: theme });
+  res.json({ message: 'Theme updated' });
+};
  
  export {
      generateAccessAndRefreshTokens,
@@ -185,4 +205,6 @@ const refreshAccessToken = asyncDbHandler(async (req, res) => {
      loginUser,
      logoutUser,
      refreshAccessToken,
+     getThemePreference,
+     updateThemePreference
  };

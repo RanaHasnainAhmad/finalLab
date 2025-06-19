@@ -26,6 +26,11 @@ const userSchema = new Schema(
       enum: ["student", "teacher"],
       required: true,
     },
+    themePreference: {
+      type: String,
+      enum: ['light', 'dark'],
+      default: 'light'
+    },
     refreshTokens: {
       type: [String],
       default: [],
